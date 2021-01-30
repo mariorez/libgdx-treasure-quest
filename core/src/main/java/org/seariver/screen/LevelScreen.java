@@ -1,13 +1,17 @@
 package org.seariver.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import org.seariver.BaseActor;
+import org.seariver.BaseGame;
 import org.seariver.BaseScreen;
 import org.seariver.TilemapActor;
 import org.seariver.actor.Bush;
+import org.seariver.actor.DialogBox;
 import org.seariver.actor.Hero;
 import org.seariver.actor.Rock;
 import org.seariver.actor.Solid;
@@ -20,6 +24,17 @@ public class LevelScreen extends BaseScreen {
 
     Hero hero;
     Sword sword;
+
+    int health;
+    int coins;
+    int arrows;
+    boolean gameOver;
+
+    Label healthLabel;
+    Label coinLabel;
+    Label arrowLabel;
+    Label messageLabel;
+    DialogBox dialogBox;
 
     public void initialize() {
 
@@ -48,10 +63,59 @@ public class LevelScreen extends BaseScreen {
 
         sword = new Sword(0, 0, mainStage);
         sword.setVisible(false);
+
+        // User Interface
+        health = 3;
+        coins = 5;
+        arrows = 3;
+        gameOver = false;
+
+        healthLabel = new Label(" x " + health, BaseGame.labelStyle);
+        healthLabel.setColor(Color.PINK);
+
+        coinLabel = new Label(" x " + coins, BaseGame.labelStyle);
+        coinLabel.setColor(Color.GOLD);
+
+        arrowLabel = new Label(" x " + arrows, BaseGame.labelStyle);
+        arrowLabel.setColor(Color.TAN);
+
+        messageLabel = new Label("...", BaseGame.labelStyle);
+        messageLabel.setVisible(false);
+
+        dialogBox = new DialogBox(0, 0, uiStage);
+        dialogBox.setBackgroundColor(Color.TAN);
+        dialogBox.setFontColor(Color.BROWN);
+        dialogBox.setDialogSize(600, 100);
+        dialogBox.setFontScale(0.80f);
+        dialogBox.alignCenter();
+        dialogBox.setVisible(false);
+
+        BaseActor healthIcon = new BaseActor(0, 0, uiStage);
+        healthIcon.loadTexture("heart-icon.png");
+        BaseActor coinIcon = new BaseActor(0, 0, uiStage);
+        coinIcon.loadTexture("coin-icon.png");
+        BaseActor arrowIcon = new BaseActor(0, 0, uiStage);
+        arrowIcon.loadTexture("arrow-icon.png");
+
+        uiTable.pad(20);
+        uiTable.add(healthIcon);
+        uiTable.add(healthLabel);
+        uiTable.add().expandX();
+        uiTable.add(coinIcon);
+        uiTable.add(coinLabel);
+        uiTable.add().expandX();
+        uiTable.add(arrowIcon);
+        uiTable.add(arrowLabel);
+        uiTable.row();
+        uiTable.add(messageLabel).colspan(8).expandX().expandY();
+        uiTable.row();
+        uiTable.add(dialogBox).colspan(8);
     }
 
     // GAME LOOP
     public void update(float deltaTime) {
+
+        if (gameOver) return;
 
         if (!sword.isVisible()) {
             // hero movement controls
@@ -68,6 +132,10 @@ public class LevelScreen extends BaseScreen {
         for (BaseActor solid : BaseActor.getList(mainStage, "org.seariver.actor.Solid")) {
             hero.preventOverlap(solid);
         }
+
+        healthLabel.setText(" x " + health);
+        coinLabel.setText(" x " + coins);
+        arrowLabel.setText(" x " + arrows);
     }
 
     public void swingSword() {
@@ -108,9 +176,13 @@ public class LevelScreen extends BaseScreen {
     }
 
     public boolean keyDown(int keycode) {
+
+        if (gameOver) return false;
+
         if (keycode == Keys.S) {
             swingSword();
         }
+
         return false;
     }
 }
