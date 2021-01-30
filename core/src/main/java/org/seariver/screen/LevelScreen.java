@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import org.seariver.BaseActor;
 import org.seariver.BaseScreen;
 import org.seariver.TilemapActor;
+import org.seariver.actor.Bush;
 import org.seariver.actor.Hero;
+import org.seariver.actor.Rock;
 import org.seariver.actor.Solid;
 import org.seariver.actor.Sword;
 
@@ -30,6 +32,16 @@ public class LevelScreen extends BaseScreen {
                     mainStage);
         }
 
+        for (MapObject obj : tma.getTileList("Bush")) {
+            MapProperties props = obj.getProperties();
+            new Bush((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
+        for (MapObject obj : tma.getTileList("Rock")) {
+            MapProperties props = obj.getProperties();
+            new Rock((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
         MapObject startPoint = tma.getRectangleList("start").get(0);
         MapProperties startProps = startPoint.getProperties();
         hero = new Hero((float) startProps.get("x"), (float) startProps.get("y"), mainStage);
@@ -38,6 +50,7 @@ public class LevelScreen extends BaseScreen {
         sword.setVisible(false);
     }
 
+    // GAME LOOP
     public void update(float deltaTime) {
 
         if (!sword.isVisible()) {
@@ -46,6 +59,10 @@ public class LevelScreen extends BaseScreen {
             if (input.isKeyPressed(Keys.RIGHT)) hero.accelerateAtAngle(0);
             if (input.isKeyPressed(Keys.UP)) hero.accelerateAtAngle(90);
             if (input.isKeyPressed(Keys.DOWN)) hero.accelerateAtAngle(270);
+        } else {
+            for (BaseActor bush : BaseActor.getList(mainStage, "org.seariver.actor.Bush")) {
+                if (sword.overlaps(bush)) bush.remove();
+            }
         }
 
         for (BaseActor solid : BaseActor.getList(mainStage, "org.seariver.actor.Solid")) {
