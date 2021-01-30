@@ -1,15 +1,12 @@
 package org.seariver.actor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import org.seariver.BaseActor;
-
-import static com.badlogic.gdx.Gdx.input;
 
 public class Hero extends BaseActor {
 
@@ -70,12 +67,6 @@ public class Hero extends BaseActor {
     public void act(float deltaTime) {
 
         super.act(deltaTime);
-
-        // hero movement controls
-        if (input.isKeyPressed(Keys.LEFT)) accelerateAtAngle(180);
-        if (input.isKeyPressed(Keys.RIGHT)) accelerateAtAngle(0);
-        if (input.isKeyPressed(Keys.UP)) accelerateAtAngle(90);
-        if (input.isKeyPressed(Keys.DOWN)) accelerateAtAngle(270);
 
         // pause animation when character not moving
         if (getSpeed() == 0) {
