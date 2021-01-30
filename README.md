@@ -1,6 +1,9 @@
 # Game: Treasure Quest
 
+![Treasure Quest](treasure-quest-screen.png "Treasure Quest")
+
 **Controls**:
+- Up, Down, Left and Right keys: moves the hero 
 
 ## Setup
 
