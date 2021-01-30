@@ -1,5 +1,7 @@
 # Game: Treasure Quest
 
+Treasure Quest is an adventure game where the character, called the hero, is called upon to rid the land of flying bat-like creatures (called Flyers) and is promised a treasure chest as a reward.
+
 ![Treasure Quest](treasure-quest-screen.png "Treasure Quest")
 
 **Controls**:
