@@ -13,8 +13,10 @@ import org.seariver.TilemapActor;
 import org.seariver.actor.Bush;
 import org.seariver.actor.Coin;
 import org.seariver.actor.DialogBox;
+import org.seariver.actor.Flyer;
 import org.seariver.actor.Hero;
 import org.seariver.actor.Rock;
+import org.seariver.actor.Smoke;
 import org.seariver.actor.Solid;
 import org.seariver.actor.Sword;
 import org.seariver.actor.Treasure;
@@ -63,6 +65,11 @@ public class LevelScreen extends BaseScreen {
         for (MapObject obj : tma.getTileList("Coin")) {
             MapProperties props = obj.getProperties();
             new Coin((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
+        for (MapObject obj : tma.getTileList("Flyer")) {
+            MapProperties props = obj.getProperties();
+            new Flyer((float) props.get("x"), (float) props.get("y"), mainStage);
         }
 
         MapObject treasureTile = tma.getTileList("Treasure").get(0);
@@ -143,6 +150,35 @@ public class LevelScreen extends BaseScreen {
 
         for (BaseActor solid : BaseActor.getList(mainStage, "org.seariver.actor.Solid")) {
             hero.preventOverlap(solid);
+
+            for (BaseActor flyer : BaseActor.getList(mainStage, "org.seariver.actor.Flyer")) {
+                if (flyer.overlaps(solid)) {
+                    flyer.preventOverlap(solid);
+                    flyer.setMotionAngle(flyer.getMotionAngle() + 180);
+                }
+            }
+        }
+
+        for (BaseActor flyer : BaseActor.getList(mainStage, "org.seariver.actor.Flyer")) {
+
+            if (hero.overlaps(flyer)) {
+                hero.preventOverlap(flyer);
+                flyer.setMotionAngle(flyer.getMotionAngle() + 180);
+                Vector2 heroPosition = new Vector2(hero.getX(), hero.getY());
+                Vector2 flyerPosition = new Vector2(flyer.getX(), flyer.getY());
+                Vector2 hitVector = heroPosition.sub(flyerPosition);
+                hero.setMotionAngle(hitVector.angleDeg());
+                hero.setSpeed(100);
+                health--;
+            }
+
+            if (sword.overlaps(flyer)) {
+                flyer.remove();
+                Coin coin = new Coin(0, 0, mainStage);
+                coin.centerAtActor(flyer);
+                Smoke smoke = new Smoke(0, 0, mainStage);
+                smoke.centerAtActor(flyer);
+            }
         }
 
         for (BaseActor coin : BaseActor.getList(mainStage, "org.seariver.actor.Coin")) {

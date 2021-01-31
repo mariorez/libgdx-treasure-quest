@@ -6,6 +6,7 @@ Treasure Quest is an adventure game where the character, called the hero, is cal
 
 **Controls**:
 - Up, Down, Left and Right keys: moves the hero 
+- "S" key: swings the sword
 
 ## Setup
 
