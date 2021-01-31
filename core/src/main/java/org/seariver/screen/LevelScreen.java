@@ -16,6 +16,7 @@ import org.seariver.actor.Coin;
 import org.seariver.actor.DialogBox;
 import org.seariver.actor.Flyer;
 import org.seariver.actor.Hero;
+import org.seariver.actor.NPC;
 import org.seariver.actor.Rock;
 import org.seariver.actor.Smoke;
 import org.seariver.actor.Solid;
@@ -76,6 +77,13 @@ public class LevelScreen extends BaseScreen {
         MapObject treasureTile = tma.getTileList("Treasure").get(0);
         MapProperties treasureProps = treasureTile.getProperties();
         treasure = new Treasure((float) treasureProps.get("x"), (float) treasureProps.get("y"), mainStage);
+
+        for (MapObject obj : tma.getTileList("NPC")) {
+            MapProperties props = obj.getProperties();
+            NPC npc = new NPC((float) props.get("x"), (float) props.get("y"), mainStage);
+            npc.setId((String) props.get("id"));
+            npc.setText((String) props.get("text"));
+        }
 
         MapObject startPoint = tma.getRectangleList("start").get(0);
         MapProperties startProps = startPoint.getProperties();
@@ -209,6 +217,44 @@ public class LevelScreen extends BaseScreen {
                 coins++;
             }
         }
+
+        for (BaseActor npcActor : BaseActor.getList(mainStage, "org.seariver.actor.NPC")) {
+            NPC npc = (NPC) npcActor;
+            hero.preventOverlap(npc);
+            boolean nearby = hero.isWithinDistance(4, npc);
+
+            if (nearby && !npc.isViewing()) {
+                // check NPC ID for dynamic text
+                if (npc.getId().equals("Gatekeeper")) {
+                    int flyerCount = BaseActor.count(mainStage, "org.seariver.actor.Flyer");
+                    String message = "Destroy the Flyers and you can have the treasure. ";
+
+                    if (flyerCount > 1) {
+                        message += "There are " + flyerCount + " left.";
+                    } else if (flyerCount == 1) {
+                        message += "There is " + flyerCount + " left.";
+                    } else { // flyerCount == 0
+                        message += "It is yours!";
+                        npc.addAction(Actions.fadeOut(5.0f));
+                        npc.addAction(Actions.after(Actions.moveBy(-10000, -10000)));
+                    }
+
+                    dialogBox.setText(message);
+                } else {
+                    dialogBox.setText(npc.getText());
+                }
+
+                dialogBox.setVisible(true);
+                npc.setViewing(true);
+            }
+
+            if (npc.isViewing() && !nearby) {
+                dialogBox.setText(" ");
+                dialogBox.setVisible(false);
+                npc.setViewing(false);
+            }
+        }
+
 
         if (hero.overlaps(treasure)) {
             messageLabel.setText("You win!");
