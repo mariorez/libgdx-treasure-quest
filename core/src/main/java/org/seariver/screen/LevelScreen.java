@@ -11,11 +11,13 @@ import org.seariver.BaseGame;
 import org.seariver.BaseScreen;
 import org.seariver.TilemapActor;
 import org.seariver.actor.Bush;
+import org.seariver.actor.Coin;
 import org.seariver.actor.DialogBox;
 import org.seariver.actor.Hero;
 import org.seariver.actor.Rock;
 import org.seariver.actor.Solid;
 import org.seariver.actor.Sword;
+import org.seariver.actor.Treasure;
 
 import static com.badlogic.gdx.Gdx.input;
 import static com.badlogic.gdx.Input.Keys;
@@ -24,6 +26,7 @@ public class LevelScreen extends BaseScreen {
 
     Hero hero;
     Sword sword;
+    Treasure treasure;
 
     int health;
     int coins;
@@ -56,6 +59,15 @@ public class LevelScreen extends BaseScreen {
             MapProperties props = obj.getProperties();
             new Rock((float) props.get("x"), (float) props.get("y"), mainStage);
         }
+
+        for (MapObject obj : tma.getTileList("Coin")) {
+            MapProperties props = obj.getProperties();
+            new Coin((float) props.get("x"), (float) props.get("y"), mainStage);
+        }
+
+        MapObject treasureTile = tma.getTileList("Treasure").get(0);
+        MapProperties treasureProps = treasureTile.getProperties();
+        treasure = new Treasure((float) treasureProps.get("x"), (float) treasureProps.get("y"), mainStage);
 
         MapObject startPoint = tma.getRectangleList("start").get(0);
         MapProperties startProps = startPoint.getProperties();
@@ -117,8 +129,8 @@ public class LevelScreen extends BaseScreen {
 
         if (gameOver) return;
 
+        // hero ans sword movement controls
         if (!sword.isVisible()) {
-            // hero movement controls
             if (input.isKeyPressed(Keys.LEFT)) hero.accelerateAtAngle(180);
             if (input.isKeyPressed(Keys.RIGHT)) hero.accelerateAtAngle(0);
             if (input.isKeyPressed(Keys.UP)) hero.accelerateAtAngle(90);
@@ -131,6 +143,31 @@ public class LevelScreen extends BaseScreen {
 
         for (BaseActor solid : BaseActor.getList(mainStage, "org.seariver.actor.Solid")) {
             hero.preventOverlap(solid);
+        }
+
+        for (BaseActor coin : BaseActor.getList(mainStage, "org.seariver.actor.Coin")) {
+            if (hero.overlaps(coin)) {
+                coin.remove();
+                coins++;
+            }
+        }
+
+        if (hero.overlaps(treasure)) {
+            messageLabel.setText("You win!");
+            messageLabel.setColor(Color.LIME);
+            messageLabel.setFontScale(2);
+            messageLabel.setVisible(true);
+            treasure.remove();
+            gameOver = true;
+        }
+
+        if (health <= 0) {
+            messageLabel.setText("Game over...");
+            messageLabel.setColor(Color.RED);
+            messageLabel.setFontScale(2);
+            messageLabel.setVisible(true);
+            hero.remove();
+            gameOver = true;
         }
 
         healthLabel.setText(" x " + health);

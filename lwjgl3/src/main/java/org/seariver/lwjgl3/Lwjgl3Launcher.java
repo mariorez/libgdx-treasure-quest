@@ -19,9 +19,9 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("GameFramework");
+        configuration.setTitle("Treasure Quest");
         configuration.setWindowedMode(800, 600);
-        configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
+        configuration.setWindowIcon("treasure-chest.png", "treasure-chest.png", "treasure-chest.png", "treasure-chest.png");
         return configuration;
     }
 }
