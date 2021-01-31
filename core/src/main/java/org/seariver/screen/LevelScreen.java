@@ -18,6 +18,8 @@ import org.seariver.actor.Flyer;
 import org.seariver.actor.Hero;
 import org.seariver.actor.NPC;
 import org.seariver.actor.Rock;
+import org.seariver.actor.ShopArrow;
+import org.seariver.actor.ShopHeart;
 import org.seariver.actor.Smoke;
 import org.seariver.actor.Solid;
 import org.seariver.actor.Sword;
@@ -31,6 +33,8 @@ public class LevelScreen extends BaseScreen {
     Hero hero;
     Sword sword;
     Treasure treasure;
+    ShopHeart shopHeart;
+    ShopArrow shopArrow;
 
     int health;
     int coins;
@@ -77,6 +81,14 @@ public class LevelScreen extends BaseScreen {
         MapObject treasureTile = tma.getTileList("Treasure").get(0);
         MapProperties treasureProps = treasureTile.getProperties();
         treasure = new Treasure((float) treasureProps.get("x"), (float) treasureProps.get("y"), mainStage);
+
+        MapObject shopHeartTile = tma.getTileList("ShopHeart").get(0);
+        MapProperties shopHeartProps = shopHeartTile.getProperties();
+        shopHeart = new ShopHeart((float) shopHeartProps.get("x"), (float) shopHeartProps.get("y"), mainStage);
+
+        MapObject shopArrowTile = tma.getTileList("ShopArrow").get(0);
+        MapProperties shopArrowProps = shopArrowTile.getProperties();
+        shopArrow = new ShopArrow((float) shopArrowProps.get("x"), (float) shopArrowProps.get("y"), mainStage);
 
         for (MapObject obj : tma.getTileList("NPC")) {
             MapProperties props = obj.getProperties();
@@ -335,6 +347,18 @@ public class LevelScreen extends BaseScreen {
 
         if (keycode == Keys.A) {
             shootArrow();
+        }
+
+        if (keycode == Keys.B) {
+            if (hero.overlaps(shopHeart) && coins >= 3) {
+                coins -= 3;
+                health += 1;
+            }
+
+            if (hero.overlaps(shopArrow) && coins >= 4) {
+                coins -= 4;
+                arrows += 3;
+            }
         }
 
         return false;
