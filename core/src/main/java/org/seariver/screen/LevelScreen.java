@@ -10,6 +10,7 @@ import org.seariver.BaseActor;
 import org.seariver.BaseGame;
 import org.seariver.BaseScreen;
 import org.seariver.TilemapActor;
+import org.seariver.actor.Arrow;
 import org.seariver.actor.Bush;
 import org.seariver.actor.Coin;
 import org.seariver.actor.DialogBox;
@@ -160,7 +161,6 @@ public class LevelScreen extends BaseScreen {
         }
 
         for (BaseActor flyer : BaseActor.getList(mainStage, "org.seariver.actor.Flyer")) {
-
             if (hero.overlaps(flyer)) {
                 hero.preventOverlap(flyer);
                 flyer.setMotionAngle(flyer.getMotionAngle() + 180);
@@ -178,6 +178,28 @@ public class LevelScreen extends BaseScreen {
                 coin.centerAtActor(flyer);
                 Smoke smoke = new Smoke(0, 0, mainStage);
                 smoke.centerAtActor(flyer);
+            }
+        }
+
+        for (BaseActor arrow : BaseActor.getList(mainStage, "org.seariver.actor.Arrow")) {
+            for (BaseActor flyer : BaseActor.getList(mainStage, "org.seariver.actor.Flyer")) {
+                if (arrow.overlaps(flyer)) {
+                    flyer.remove();
+                    arrow.remove();
+                    Coin coin = new Coin(0, 0, mainStage);
+                    coin.centerAtActor(flyer);
+                    Smoke smoke = new Smoke(0, 0, mainStage);
+                    smoke.centerAtActor(flyer);
+                }
+            }
+
+            for (BaseActor solid : BaseActor.getList(mainStage, "org.seariver.actor.Solid")) {
+                if (arrow.overlaps(solid)) {
+                    arrow.preventOverlap(solid);
+                    arrow.setSpeed(0);
+                    arrow.addAction(Actions.fadeOut(0.5f));
+                    arrow.addAction(Actions.after(Actions.removeActor()));
+                }
             }
         }
 
@@ -248,12 +270,25 @@ public class LevelScreen extends BaseScreen {
         }
     }
 
+    public void shootArrow() {
+        if (arrows <= 0) return;
+        arrows--;
+        Arrow arrow = new Arrow(0, 0, mainStage);
+        arrow.centerAtActor(hero);
+        arrow.setRotation(hero.getMotionAngle());
+        arrow.setMotionAngle(hero.getMotionAngle());
+    }
+
     public boolean keyDown(int keycode) {
 
         if (gameOver) return false;
 
         if (keycode == Keys.S) {
             swingSword();
+        }
+
+        if (keycode == Keys.A) {
+            shootArrow();
         }
 
         return false;
