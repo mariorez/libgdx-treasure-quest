@@ -5,10 +5,10 @@ Treasure Quest is an adventure game where the character, called the hero, is cal
 ![Treasure Quest](treasure-quest-screen.png "Treasure Quest")
 
 **Controls**:
-- Up, Down, Left and Right keys: moves the hero 
-- "S" key: swings the sword
-- "A" key: shoots arrow
-- "B" key: buy shop items
+- **Up**, **Down**, **Left** and **Right** keys: moves the hero 
+- **S** key: swings the sword
+- **A** key: shoots arrow
+- **B** key: buy shop items
 
 ## Setup
 

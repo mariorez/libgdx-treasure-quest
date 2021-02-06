@@ -555,7 +555,6 @@ public class BaseActor extends Group {
      */
     public void alignCamera() {
         Camera cam = this.getStage().getCamera();
-        Viewport v = this.getStage().getViewport();
 
         // center camera on actor
         cam.position.set(this.getX() + this.getOriginX(), this.getY() + this.getOriginY(), 0);
