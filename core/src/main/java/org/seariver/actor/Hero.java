@@ -31,7 +31,6 @@ public class Hero extends BaseActor {
 
         TextureRegion[][] temp = TextureRegion.split(texture, frameWidth, frameHeight);
         Array<TextureRegion> textureArray = new Array<>();
-
         for (int c = 0; c < cols; c++) {
             textureArray.add(temp[0][c]);
         }
